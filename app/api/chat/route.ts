@@ -13,6 +13,8 @@ export async function POST(req: Request) {
   try {
     const { query } = await req.json();
 
+    console.log(query)
+
     if (!query || typeof query !== "string") {
       return NextResponse.json({ error: "Query is required." }, { status: 400 });
     }
@@ -183,9 +185,12 @@ export async function POST(req: Request) {
     5. **Include all relevant details** the speaker mentioned
     6. **At the very end, append the metadata** from each chunk in this format:
 
-    ### Sources
-    - **Start → End (Filename)**
-    - Example: 00:01:15.000 → 00:02:05.200 (lecture1.vtt)
+        ### Sources
+        -   - **Start → End (Filename)**
+        -   - Example: 00:01:15.000 → 00:02:05.200 (lecture1.vtt)
+        +   - **Start → End (Filename without .vtt extension)**
+        +   - Example: 00:01:15.000 → 00:02:05.200 (lecture1)
+
 
     ## ⚖️ BALANCE:
     - **Informative but natural**
