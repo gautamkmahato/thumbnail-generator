@@ -128,6 +128,7 @@ export async function POST(req: Request) {
 
     docs = await filterRelevantChunks(query, docs);
     const finalDocs = rerankDocs(docs, 5);
+    console.log("final Docs ready")
 
     const context = finalDocs.map((doc) => ({
       pageContent: doc.pageContent,
@@ -199,16 +200,25 @@ export async function POST(req: Request) {
 
     ---
 
-    Based on the above context, create a comprehensive response that covers all relevant information the speaker mentioned. Organize the content into natural sections based on different topics/aspects the speaker discussed, while maintaining their authentic voice and teaching style throughout. 
+    Based on the above context, create a comprehensive response that covers all relevant information the speaker mentioned. 
+    Organize the content into natural sections based on different topics/aspects the 
+    speaker discussed, while maintaining their authentic voice and teaching style 
+    throughout. 
 
-    **Finally, include the list of sources with their start/end timestamps and filenames at the end as specified.**`],
+    **Finally, include the list of sources with their start/end timestamps and filenames 
+    at the end as specified. 
+    NOTE: give the final response in markdown format only
+    **`],
     ["human", "{input}"]
     ]);
 
     const chain = prompt.pipe(model).pipe(parser);
 
-    const result = await chain.invoke({ input: query, context: JSON.stringify(context) });
+    console.log("Formating result...")
 
+    const result = await chain.invoke({ input: query, context: JSON.stringify(context) });
+    console.log(result)
+    console.log("Result ready")
     // ------------------------------
     // Return result as JSON
     // ------------------------------
