@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import MarkdownViewer from '../_components/MarkdownViewer'
 
 interface Message {
   id: number;
@@ -72,21 +73,22 @@ export default function ChatPage() {
       {/* Messages */}
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-md ${
-                m.role === "user"
-                  ? "bg-gray-300 text-gray-800 rounded-br-none"
-                  : "bg-gray-700 text-gray-200 rounded-bl-none"
-              }`}
-            >
-              <ReactMarkdown>{m.content}</ReactMarkdown>
-            </div>
-          </div>
-        ))}
+  <div
+    key={m.id}
+    className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+  >
+    <div
+      className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-md ${
+        m.role === "user"
+          ? "bg-purple-600 text-white rounded-br-none"
+          : "bg-gray-800 text-gray-200 rounded-bl-none"
+      }`}
+    >
+      <MarkdownViewer content={m.content} />
+    </div>
+  </div>
+))}
+
 
         {loading && (
           <p className="text-gray-500 animate-pulse">Assistant is thinking...</p>
