@@ -13,8 +13,6 @@ export async function POST(req: Request) {
   try {
     const { query } = await req.json();
 
-    console.log(query)
-
     if (!query || typeof query !== "string") {
       return NextResponse.json({ error: "Query is required." }, { status: 400 });
     }
@@ -139,6 +137,8 @@ export async function POST(req: Request) {
       fileNames: doc.metadata.fileNames,
     }));
 
+    console.log(context)
+
     // 3. Build prompt
     const prompt = ChatPromptTemplate.fromMessages([
     ["system", `You are tasked with synthesizing video transcript content while preserving the speaker's authentic voice and teaching style. Your goal is to create a comprehensive, informative response that covers all relevant aspects mentioned in the context.
@@ -185,12 +185,9 @@ export async function POST(req: Request) {
     5. **Include all relevant details** the speaker mentioned
     6. **At the very end, append the metadata** from each chunk in this format:
 
-        ### Sources
-        -   - **Start → End (Filename)**
-        -   - Example: 00:01:15.000 → 00:02:05.200 (lecture1.vtt)
-        +   - **Start → End (Filename without .vtt extension)**
-        +   - Example: 00:01:15.000 → 00:02:05.200 (lecture1)
-
+    ### Sources
+    - **Start → End (Filename)**
+    - Example: 00:01:15.000 → 00:02:05.200 (lecture1.vtt)
 
     ## ⚖️ BALANCE:
     - **Informative but natural**
@@ -222,7 +219,7 @@ export async function POST(req: Request) {
     console.log("Formating result...")
 
     const result = await chain.invoke({ input: query, context: JSON.stringify(context) });
-    console.log(result)
+    
     console.log("Result ready")
     // ------------------------------
     // Return result as JSON
