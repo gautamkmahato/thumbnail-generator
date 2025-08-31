@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import "dotenv/config"
-import OpenAI from "openai";
+import OpenAI from "openai/index.mjs";
 import fs from 'fs';
 import {GoogleGenAI,} from '@google/genai';
 import mime from 'mime';
