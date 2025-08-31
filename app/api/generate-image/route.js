@@ -8,10 +8,25 @@ import {GoogleGenAI,} from '@google/genai';
 import mime from 'mime';
 import path from "path";
 import { fal } from '@fal-ai/client'
+import jwt from "jsonwebtoken";
 import { removeJsonCodeBlockMarkers } from "@/lib/utils/removeJsonCodeBlockMarkers";
 
 
 const falAiUrl = 'fal-ai/nano-banana/edit'
+
+const SECRET = process.env.JWT_SECRET || "supersecret";
+
+// Middleware-like check
+async function authenticate(req) {
+  const token = req.cookies.get("token")?.value;
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, SECRET);
+  } catch {
+    return null;
+  }
+}
 
 fal.config({
   // 👇 securely set API key from env variable
@@ -4517,6 +4532,12 @@ try{
  * Next.js 15 Route Handler
  */
 export async function POST(req) {
+  const user = await authenticate(req);
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  
   try {
     const { imageUrl, query, position, videoType, style, mood } = await req.json();
 
@@ -4548,11 +4569,11 @@ export async function POST(req) {
       console.log("[📩] Other Received request:");
       requiresImage = false; 
       if (position === "left") {
-        prompts = [systemPrompt_general_openai_left_half_body, systemPrompt_general_openai_left_body, systemPrompt_general_openai_left_half_body, systemPrompt_general_claude_left];
+        prompts = [systemPrompt_general_openai_left_half_body, systemPrompt_general_openai_left_body, systemPrompt_general_openai_left_half_body, systemPrompt_general_openai_left_body];
       } else if (position === "center") {
         prompts = [systemPrompt_general_openai_center_half_body, systemPrompt_general_openai_center_half_body, systemPrompt_general_openai_center_body, systemPrompt_general_openai_center_body];
       } else if (position === "right") {
-        prompts = [systemPrompt_general_openai_right, systemPrompt_general_openai_right_half_body, systemPrompt_general_openai_right_body, systemPrompt_general_claude_right];
+        prompts = [systemPrompt_general_openai_right_body, systemPrompt_general_openai_right_half_body, systemPrompt_general_openai_right_body, systemPrompt_general_openai_right_half_body];
       }
     }
 
