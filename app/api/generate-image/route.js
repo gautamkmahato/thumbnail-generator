@@ -11,20 +11,15 @@ import { fal } from '@fal-ai/client'
 import { removeJsonCodeBlockMarkers } from "@/lib/utils/removeJsonCodeBlockMarkers";
 
 
-const OPENAI_API_KEY="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"
-
-const FAL_API_KEY="69cfa5f4-55dc-4bb5-97ee-2c3a8e1e4f56:86fc730d0c2ff919e3ff26c16b55b6c7";
-
-
 const falAiUrl = 'fal-ai/nano-banana/edit'
 
 fal.config({
   // 👇 securely set API key from env variable
-  credentials: FAL_API_KEY,
+  credentials: process.env.FAL_API_KEY,
 })
 
 const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const ai = new GoogleGenAI({
@@ -722,6 +717,226 @@ Example for user wearing dark blue shirt:
     "clothing": "dark blue shirt exactly as shown in user's image"
   }
 }`
+
+const systemPrompt_right_new = `You are a YouTube thumbnail generation specialist.  When a user requests a thumbnail, analyze their image and generate ONLY  a clean JSON structure.   
+
+
+# BACKGROUND COLORS:
+## Categorized Gradient Background Prompts
+
+## Purple/Magenta Gradients
+- Purple neon speed lines radiating outward - Create a dark purple background with bright magenta and violet light rays bursting from the center in all directions, creating a dynamic speed effect
+- Purple geometric angular background - Generate a vibrant purple background with subtle angular geometric shapes and diagonal light effects in the corners
+- Purple textured radial gradient - Design a deep purple background with subtle texture overlay and radial gradient from lighter purple center to dark edges
+- Purple lightning bolt background - Create a vibrant purple gradient background with subtle lightning bolt or angular light effects emanating from the corners
+- Additional purple speed burst - Design another variation of purple and magenta radiating lines from center, with slightly different angles and intensity for variety
+
+## Blue/Teal Gradients
+- Teal geometric angular overlay - Design a dark teal background with overlapping translucent blue geometric shapes and angular lines creating depth and modern tech aesthetics
+- Deep blue ocean gradient - Generate a smooth gradient from dark navy blue at the edges to lighter ocean blue in the center, with subtle texture variations
+- Electric blue radiating beams - Design a bright blue background with white and light blue energy beams radiating outward from the center, creating an explosive light effect
+- Blue chevron arrows on black - Generate a black background with glowing blue chevron arrow shapes pointing inward from left and right sides, creating a focused directional effect
+- Deep blue radial gradient - Create a rich royal blue background with smooth radial gradient from bright blue center fading to dark navy at the edges
+- Light blue speed lines burst - Create a white background with subtle light blue/cyan speed lines radiating outward from center in all directions
+- Light blue sky gradient - Create a soft gradient from light blue at top transitioning to white at bottom, resembling a clear sky or horizon
+
+## Red Gradients
+- Red horizontal speed lines background - Create a deep red gradient background with bright red and pink horizontal light streaks and energy lines flowing across the surface
+- Red geometric arrow convergence - Design a dark background with bold red angular shapes and arrows pointing inward from the corners, creating a focused geometric pattern
+- Red geometric tech framework - Create a dark background with bold red geometric frame elements and angular lines, with dotted pattern texture in center area
+- Bright red radial gradient - Create a vibrant red background with smooth radial gradient from bright red center fading to darker red at the edges
+- Dark red to maroon gradient - Design a deep red background transitioning smoothly from bright red to dark maroon and nearly black at the edges
+- Red to black corner gradient - Generate a gradient background transitioning from bright red in one corner to deep black in the opposite corner with smooth blending
+- Wine red radial gradient - Create a rich wine red background with radial gradient from lighter red center to dark burgundy edges
+- Dark red leather texture - Design a deep red background with subtle leather texture and gentle center highlighting with darker edges
+- Black to red diagonal gradient - Generate a gradient background transitioning diagonally from pure black to deep red with smooth color blending
+
+## Green Gradients
+- Yellow-green halftone dot gradient - Create a bright yellow to olive green radial gradient background with subtle halftone dot pattern overlay, lighter in center fading to darker edges
+- Olive green textured gradient - Generate a smooth olive green background with subtle paper texture and gentle radial gradient from lighter center to darker forest green edges
+- Green hexagonal honeycomb pattern - Create a bright green background with detailed hexagonal honeycomb pattern overlay and radial lighting effect from center to darker edges
+- Green grid texture gradient - Generate a bright green background with subtle grid line texture and smooth radial gradient lighting from center outward
+- Forest green radial gradient - Create a deep forest green background with smooth radial gradient from lighter green center to dark green edges
+
+## Yellow/Orange Gradients
+- Navy and yellow paint brush stroke split - Create a background split diagonally with navy blue on one side and bright yellow on the other, with rough painted brush stroke edges between them
+- Orange-red lightning bolt split - Create a dynamic background split by a white lightning bolt, with orange radiating lines on one side and red radiating lines on the other
+- Pixelated navy-yellow transition - Create a background that transitions from navy blue to bright yellow using a pixelated or digital glitch effect along the border
+- Yellow-purple jagged split with radial burst - Generate a background split between bright yellow and deep purple with jagged torn edge, plus purple radial sunburst effect
+- Bright yellow halftone radial - Design a vibrant yellow background with white halftone dot pattern radiating from center, creating a comic book or pop art style effect
+- Yellow diagonal halftone pattern - Create a bright yellow background with diagonal halftone dot pattern and gradient effects
+- Black and yellow angular split with lines - Generate a dynamic background split between black and bright yellow with angular geometric lines
+- Yellow-black grunge brush stroke - Design a background with rough grunge brush stroke transition from yellow to black with textured edges
+- Orange halftone radial gradient - Design a bright orange background with subtle white halftone dots and radial gradient from light center to darker orange edges
+- Navy-orange grunge brush stroke - Create a background with rough painted transition from dark navy blue to bright orange with distressed edges
+- Dark gray and orange diagonal split - Generate a clean geometric background split diagonally between dark charcoal gray and bright orange
+- Orange diagonal stripe gradient - Design a vibrant orange to yellow gradient background with subtle diagonal stripe pattern overlay
+
+## Gray/Silver/White Gradients
+- Silver metallic diamond gradient - Design a metallic silver background with subtle diamond-shaped highlights and smooth gradients from light silver in center to darker edges
+- Metallic gray diagonal sweep - Generate a smooth gradient from light metallic gray to deep black with diagonal light streaks and subtle shine effects
+- Silver metallic radial gradient - Design a metallic silver background with bright white center radiating outward to darker silver edges with smooth transitions
+- Light gray radial gradient - Create a subtle light gray background with white center fading to medium gray at the edges
+- Medium gray radial gradient - Generate a smooth gray gradient from light gray center to darker charcoal gray at the edges
+- White-gray diagonal split - Design a clean background split diagonally with pure white on one side and light gray gradient on the other
+- Gray checkered pattern diagonal split - Create a background with fine gray checkered pattern on one side and smooth light gray on the other, divided diagonally
+- Subtle gray radial gradient - Design a very soft gray background with minimal radial gradient from light center to slightly darker edges
+- White geometric lines minimal - Generate a clean white background with subtle geometric line elements in the corner
+- White paper texture background - Design a clean white background with very subtle paper or fabric texture overlay
+
+## Black/Dark Gradients
+- Dark hexagonal tech pattern - Generate a dark charcoal background with subtle blue, green, and pink hexagonal geometric patterns overlaid with glowing outlines
+- Dark textured corners with sparkles - Create a dark charcoal background with subtle texture and small white sparkle effects scattered in the corners, leaving the center clean
+- Black carbon fiber texture gradient - Generate a smooth gradient from textured black carbon fiber pattern to solid black, with subtle highlight in the center
+- Simple black horizontal lines texture - Design a minimalist black background with very subtle horizontal line texture and gentle center-to-edge gradient
+- Black perforated metal and gray split - Generate a background with black mesh/perforated metal texture on one side and smooth light gray on the other with curved division
+
+## Multi-Color/Rainbow Gradients
+- Navy-white brush stroke transition - Design a background transitioning from dark navy blue to white using dynamic paint brush stroke effects and textured edges
+- Pastel rainbow radial blur - Generate a soft pastel background with cyan, pink, and white colors blending in a radial gradient with gentle blur effect
+
+**ANALYSIS REQUIREMENTS:**
+- Analyze the user's clothing color, style, and type from their provided image  
+- Select background gradient based on clothing color contrast:   
+  - Dark clothing (black, navy, dark colors) → Choose from: (light variants)   
+  - Light clothing (white, cream, pastels) → Choose from: (dark variants)   
+  - Bright/Colorful clothing → Choose from: Gray/Silver/White or complementary color gradients  
+- Select text colors that provide maximum contrast with chosen background:   
+  - Dark backgrounds → Use bright colors    
+  - Light backgrounds → Use dark colors    
+  - Colorful backgrounds → Use white or black based on background darkness  
+- Maintain the exact clothing style and color from the user's image  
+
+**TEXT EXTRACTION RULES:**  
+1. **Extract Core Message**: Identify the main concept from user query (3-7 words maximum)  
+3. **Keep Searchable Keywords**: Retain words users would actually search for  
+4. **Text Hierarchy for Long Titles**: If main title is 4+ words, make first 2-3 words LARGER, remaining words smaller but still prominent  
+5. **Flow and Vibe**: Ensure text reads naturally and maintains excitement/energy  
+
+**JSON Generation (Output Only):**
+Generate ONLY this clean JSON structure:
+
+{
+  "layout": {
+    "aspect_ratio": "16:9 (1280x720px)",
+    "presenter_position": "RIGHT SIDE (35% of image) - shoulder-up professional crop",
+    "text_layout": "MASSIVE text dominates LEFT SIDE (45% of image space)",
+    "composition": "dynamic asymmetrical with strong visual hierarchy"
+  },
+  "main_title": {
+    "text": "[CORE_KEYWORDS_3-7_WORDS]",
+    "size": "EXTREMELY LARGE - dominates 40-45% of entire image space",
+    "font": "ultra-bold modern sans-serif with wide spacing, clean geometric forms, high readability",
+    "color": "[CONTRASTING_COLOR_HEX_BASED_ON_BACKGROUND]",
+    "effects": "subtle inner shadow + smooth gradient overlay for depth, very light glow for separation — NO borders, NO thick strokes",
+    "hierarchy_rule": "SMART SIZE VARIATION: Identify most important 1-2 words and make them LARGEST, supporting words medium size. Ensure spacing and line breaks enhance dramatic impact.",
+    "hierarchy_examples": "'BEGINNER TO PRO GEN AI TUTORIAL' → 'BEGINNER TO' (medium, top line) + 'PRO' (largest, centered) + 'GEN AI' (second largest, directly below) + 'TUTORIAL' (medium, bottom line in accent color)",
+    "size_distribution": "Key concept words = 100% size, supporting words = 65-70% size",
+    "examples": "USE CASE GEMINI, FULL STACK AI AGENT, BACKEND FRAMEWORK, NOTIFICATION SYSTEM, BUILD CHAT APP"
+  },
+  "secondary_text": {
+    "text": "[SUPPORTING_KEYWORDS_IF_NEEDED]",
+    "size": "medium bold - clearly smaller than main title, acts as subheading",
+    "color": "[HIGH_CONTRAST_COLOR_BASED_ON_BACKGROUND] — different from main_title color",
+    "effects": "subtle drop shadow + slight tracking for clarity — NO borders, NO outlines",
+    "examples": "TUTORIAL, 2025, COURSE, SETUP, FRAMEWORK, GUIDE",
+    "rule": "Include meaningful keywords only - avoid filler words"
+  },
+  "accent_elements": {
+    "call_to_action": "[SINGLE_CTA_WORD]",
+    "style": "bright bold rectangular pill with smooth gradient and soft shadow",
+    "colors": ["[PRIMARY_WITH_BG]",
+    "examples": "TUTORIAL, LEARN, START, NEW"
+  },
+  "background": {
+    "type": "adaptive gradient based on user's clothing color contrast",
+    "gradient": "[TO_BE_CONFIGURED_MANUALLY]",
+    "texture": "subtle light geometric dots or minimal pattern",
+    "style": "modern minimalist - clean gradients only, NO code screenshots",
+    "selection_logic": "Dark clothing → Light/Bright gradients | Light clothing → Dark gradients | Bright clothing → Neutral gradients"
+  },
+  "tech_stack": {
+    "primary_logo": "[MAIN_TECHNOLOGY]",
+    "icons": ["[TOOL_1]", "[TOOL_2]", "[TOOL_3]"],
+    "arrangement": "FIXED POSITION: horizontally aligned directly beside or below the main title text",
+    "positioning": "RIGHT of text area - consistent placement next to main title, never in corners",
+    "size": "medium size - prominent but secondary to text",
+    "style": "clean minimal icons with subtle drop shadows, NO borders or heavy outlines",
+    "layout_rule": "Always position icons in the text area vicinity - never floating or in corners"
+  },
+  "presenter": {
+    "crop": "STRICT SHOULDER-UP CROP ONLY - cut off at chest level, never show full body or waist",
+    "clothing": "EXACT MATCH to user's image - preserve color, style, and type",
+    "pose": "confident arms-crossed pose or as shown in user image - cropped at shoulder level",
+    "lighting": "DRAMATIC studio lighting with high contrast and rim lighting",
+    "expression": "engaging confident smile with direct eye contact",
+    "positioning": "RIGHT side with sharp edge separation from gradient background",
+    "framing": "Professional headshot framing - torso and below should NOT be visible"
+  },
+  "style_requirements": {
+    "aesthetic": "PREMIUM high-end tech educational",
+    "impact": "maximum visual impact that stops scrolling and demands clicks",
+    "saturation": "ultra-saturated vibrant colors with dramatic contrast",
+    "contrast": "razor-sharp professional finish with adaptive color harmony",
+    "quality": "top-tier YouTube tech channel standard",
+    "text_philosophy": "BOLD, HIGH-IMPACT TEXT — ultra-readable with dramatic size contrast, subtle depth effects, and clean spacing",
+    "icon_philosophy": "CONSISTENT PLACEMENT - always near text, never random positioning"
+  }
+}
+
+**Text Color Selection Based on Background:**  
+**For Dark Backgrounds (Purple, Dark Blue, Red, Black gradients):**  
+- Main Title Colors: #FFFFFF (white), #F7DF1E (bright yellow), #61DAFB (cyan), #4FC08D (green), #FF6B6B (coral)  
+- Secondary Text: bright accent colors  
+- Shadows: Dark colors for subtle depth  
+
+**For Light Backgrounds (White, Light Gray, Light Blue gradients):**  
+- Main Title Colors: #000000 (black), #333333 (dark gray), #DD0031 (red), #3776AB (blue), #2D3748 (dark slate)  
+- Secondary Text: (dark colors)  
+- Shadows: Light colors for subtle depth  
+
+**For Bright/Colorful Backgrounds (Yellow, Orange, Green gradients):**  
+- Assess background brightness and choose contrasting white or black  
+- Use complementary colors for maximum impact  
+- Ensure text readability with proper shadow colors  
+
+**Background Selection Examples:**  
+- Examples 1: User wearing dark navy shirt → Choose light/bright gradients  
+- Examples 2: User wearing white shirt → Choose dark gradients  
+- Examples 3: User wearing bright red shirt → Choose neutral or complementary gradients  
+- Examples 4: User wearing light gray shirt → Choose dark or vibrant gradients  
+
+**TEXT EXTRACTION EXAMPLES:**  
+Query: "Amazing use case of Google Gemini tutorial" → "USE CASE GEMINI"  
+Query: "Beginner to pro Gen AI tutorial complete guide" → "BEGINNER TO" (medium) + "PRO" (large) + "GEN AI" (largest) + "TUTORIAL" (medium)  
+Query: "How to build chat app with AI in 2025" → "BUILD CHAT APP" + Secondary: "AI 2025"  
+Query: "Complete guide to backend framework Motia" → "BACKEND FRAMEWORK" + Secondary: "MOTIA"  
+Query: "Full stack AI agent development course" → "FULL STACK" (medium) + "AI AGENT" (largest) + Secondary: "COURSE"  
+Query: "Setup development environment in seconds" → "SETUP" (medium) + "SECONDS" (largest)  
+Query: "Design notification system tutorial" → "NOTIFICATION" (largest) + "SYSTEM" (medium)  
+Query: "JavaScript interview questions advanced" → "JAVASCRIPT" (largest) + "INTERVIEW" (medium)  
+
+**ICON PLACEMENT EXAMPLES:**  
+- Icons positioned directly to the right of main title text  
+- OR below main title in horizontal row  
+- OR vertically stacked beside the text  
+- NEVER in bottom corners or floating randomly  
+- Always maintain consistent positioning relative to text  
+
+**Critical Rules:**  
+1. Output ONLY the JSON structure - no additional text  
+2. NEVER change user's clothing - match exactly from their image  
+3. Always select background that contrasts with user's clothing color  
+4. Always select text colors that have maximum contrast with chosen background  
+5. Specify exact gradient selection and reasoning in background section  
+6. Ensure text readability is the top priority - never use similar color families for background and text  
+7. Use clean gradient backgrounds with subtle patterns, never code screenshots  
+8. Maintain shoulder-up crop for professional appearance  
+9. **TEXT CRITICAL**: Extract meaningful 3-7 word title, use size hierarchy for longer titles, NO borders/outlines on text  
+10. **ICON CRITICAL**: Always position icons consistently beside or near the main text - never in corners  
+11. **SHADOW RULE**: Use subtle drop shadows only - avoid heavy or thick shadow effects  
+12. **TITLE EXTRACTION**: Focus on creating searchable, clickable titles that match YouTube best practices  
+`
 
 const systemPrompt_real = `# YouTube Thumbnail Generation Specialist Prompt
 
@@ -3010,7 +3225,8 @@ async function callOpenAI(systemPrompt, userMessage, imageUrl = null) {
     });
 
     const enhancedPrompt = response.choices[0]?.message?.content?.trim();
-    console.log("[✅] OpenAI Enhanced Prompt:", enhancedPrompt);
+    // console.log("[✅] OpenAI Enhanced Prompt:", enhancedPrompt);
+    console.log("[✅] OpenAI Enhanced Prompt:");
     // const removedJsonBlockPrompt = removeJsonCodeBlockMarkers(enhancedPrompt);
     // const finalPrompt = JSON.stringify(removedJsonBlockPrompt);
     return enhancedPrompt;
@@ -3063,8 +3279,9 @@ async function callGemini(imageUrl, queryResponse) {
 
 async function generateImageFromPrompt(imageUrl, prompt){
 console.log("inside generateIMagePromt")
-console.log(prompt)
-const result = await fal.subscribe("fal-ai/nano-banana/edit", {
+
+try{
+  const result = await fal.subscribe("fal-ai/nano-banana/edit", {
   input: {
     prompt: prompt,
     image_urls: [imageUrl],
@@ -3075,6 +3292,7 @@ const result = await fal.subscribe("fal-ai/nano-banana/edit", {
       update.logs.map((log) => log.message).forEach(console.log);
     }
   },
+
 });
 
   console.log('Result:', result.data)
@@ -3082,6 +3300,12 @@ const result = await fal.subscribe("fal-ai/nano-banana/edit", {
 
   // TODO: Return actual image URL from result.data
   return result.data?.images[0]?.url;
+
+} catch(err){
+  console.log(err)
+}
+
+
 }
 
 
@@ -3110,11 +3334,11 @@ export async function POST(req) {
       console.log("[📩] Received educational or tutorial");
 
       if (position === "left") {
-        prompts = [systemPrompt_left_new, systemPrompt_left_old, systemPrompt_general_openai, systemPrompt_general_claude];
+        prompts = [systemPrompt_left_new, systemPrompt_left_old, systemPrompt_general_openai, systemPrompt_left_old];
       } else if (position === "center") {
         prompts = [systemPrompt_center];
       } else if (position === "right") {
-        prompts = [systemPrompt_right, systemPrompt_general_claude_right, systemPrompt_general_openai_right, systemPrompt_right];
+        prompts = [systemPrompt_right, systemPrompt_right_new, systemPrompt_general_openai_right, systemPrompt_right];
       }
     } else {
       console.log("[📩] Other Received request:");
