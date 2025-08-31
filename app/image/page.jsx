@@ -277,9 +277,7 @@ export default function Home() {
                 >
                   <option value="educational">Educational</option>
                   <option value="tutorial">Tutorial</option>
-                  <option value="sports">Sports</option>
-                  <option value="comparison">Comparison / Review</option>
-                  <option value="blogging">Blogging</option>
+                  <option value="sports">Others (Eg: Sports, Adventure, Blogging, Review, etc)</option>
                 </select>
               </div>
 
