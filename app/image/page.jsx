@@ -282,7 +282,7 @@ export default function Home() {
                   className="w-full rounded-lg border p-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white"
                 >
                   <option value="educational">Educational</option>
-                  <option value="tutorial">Tutorial</option>
+                  <option value="tutorial">Tech Tutorial</option>
                   <option value="sports">Others (Eg: Sports, Adventure, Blogging, Review, etc)</option>
                 </select>
               </div>
