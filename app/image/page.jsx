@@ -227,7 +227,7 @@ export default function Home() {
               <div className="mt-5 space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Type size={18} className="text-blue-600" />
-                  Thumbnail Text
+                  Text
                 </label>
                 <textarea
                   value={query}
@@ -288,10 +288,10 @@ export default function Home() {
               </div>
 
               {/* Style */}
-              <div className="mt-5 space-y-2">
+              {/* <div className="mt-5 space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Palette size={18} className="text-blue-600" />
-                  Style
+                  Style (optional)
                 </label>
                 <select
                   value={style}
@@ -304,10 +304,10 @@ export default function Home() {
                   <option value="fun">Fun & Playful</option>
                   <option value="before after">Before / After</option>
                 </select>
-              </div>
+              </div> */}
 
               {/* Mood */}
-              <div className="mt-5 space-y-2">
+              {/* <div className="mt-5 space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Smile size={18} className="text-blue-600" />
                   Mood
@@ -322,7 +322,7 @@ export default function Home() {
                   <option value="friendly">Friendly & Approachable</option>
                   <option value="dramatic">Dramatic & Intense</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="mt-6">
                 <button

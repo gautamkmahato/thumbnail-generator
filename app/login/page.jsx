@@ -20,7 +20,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push("/"); // redirect to homepage or generator page
+      router.push("/image"); // redirect to homepage or generator page
     } else {
       const data = await res.json();
       setError(data.error || "Login failed");
