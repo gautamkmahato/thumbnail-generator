@@ -183,8 +183,7 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[SINGLE_CTA_WORD]",
     "style": "bright bold rectangular pill with smooth gradient and soft shadow",
-    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]", "[SECONDARY_ACCENT_CONTRASTING_WITH_BG]"],
-    "examples": "WATCH, LEARN, START, NEW"
+    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]",],
   },
   "background": {
     "type": "adaptive gradient based on user's clothing color contrast",
@@ -406,8 +405,7 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[SINGLE_CTA_WORD]",
     "style": "bright rectangular background highlight pill",
-    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]", "[SECONDARY_ACCENT_CONTRASTING_WITH_BG]"],
-    "examples": "WATCH, LEARN, START, NEW"
+    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]"],
   },
   "background": {
     "type": "adaptive gradient based on user's clothing color contrast",
@@ -641,7 +639,7 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[CTA_TEXT]",
     "style": "bright rectangular background highlight pill",
-    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]", "[SECONDARY_ACCENT_CONTRASTING_WITH_BG]"]
+    "colors": ["[PRIMARY_ACCENT_CONTRASTING_WITH_BG]",]
   },
   "background": {
     "type": "adaptive gradient based on user's clothing color contrast",
@@ -860,8 +858,7 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[SINGLE_CTA_WORD]",
     "style": "bright bold rectangular pill with smooth gradient and soft shadow",
-    "colors": ["[PRIMARY_WITH_BG]",
-    "examples": "TUTORIAL, LEARN, START, NEW"
+    "colors": "[PRIMARY_WITH_BG]",
   },
   "background": {
     "type": "adaptive gradient based on user's clothing color contrast",
@@ -1112,7 +1109,7 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[CTA_TEXT]",
     "style": "[banner/pill/badge based on layout style]",
-    "colors": ["[PRIMARY_ACCENT]", "[SECONDARY_ACCENT]"]
+    "colors": ["[PRIMARY_ACCENT]"]
   },
   "background": {
     "type": "adaptive gradient based on user's clothing color contrast",
@@ -1384,10 +1381,10 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[CTA_TEXT]",
     "style": "solid background banner with 3D shadow effects",
-    "colors": ["[PRIMARY_ACCENT]", "[SECONDARY_ACCENT]"],
+    "colors": "[PRIMARY_ACCENT]",
     "position": "corner areas - never interfering with centered person",
     "size": "medium with prominent visibility",
-    "background_treatment": "solid colored background with heavy 3D shadow effects",
+    "background_treatment": "solid colored background with soft 3D shadow effects",
     "shadow_style": "deep drop shadow to create floating 3D appearance"
   },
   "side_text_elements": {
@@ -1715,10 +1712,10 @@ Generate ONLY this clean JSON structure:
   "accent_elements": {
     "call_to_action": "[CTA_TEXT]",
     "style": "solid background banner with 3D shadow effects",
-    "colors": ["[PRIMARY_ACCENT]", "[SECONDARY_ACCENT]"],
+    "colors": "[PRIMARY_ACCENT]",
     "position": "corner areas - never interfering with centered person",
     "size": "medium with prominent visibility",
-    "background_treatment": "solid colored background with heavy 3D shadow effects",
+    "background_treatment": "solid colored background with soft 3D shadow effects",
     "shadow_style": "deep drop shadow to create floating 3D appearance"
   },
   "side_text_elements": {
@@ -4537,7 +4534,7 @@ export async function POST(req) {
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  
+
   try {
     const { imageUrl, query, position, videoType, style, mood } = await req.json();
 
