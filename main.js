@@ -54,20 +54,71 @@ export const extractElements = tool({
   },
 });
 
+
 export const typeText = tool({
   name: "type-text",
-  description: "Type text into an input field",
+  description: "Type text into an input field in a human-like way (pauses, typos, corrections, React/Vue compatible).",
   parameters: z.object({ selector: z.string(), text: z.string() }),
   async execute({ selector, text }) {
-    console.log(`Step: typing into ${selector}...`);
+    console.log(`Typing "${text}" into ${selector}...`);
     if (!page) throw new Error("No active page");
-    await page.waitForSelector(selector, { visible: true });
-    await page.click(selector, { clickCount: 3 });
-    await page.type(selector, text, { delay: 100 });
-    console.log(`Typed "${text}" into ${selector}`);
-    return `Typed "${text}" into ${selector}`;
+
+    const input = await page.waitForSelector(selector, { state: "visible" });
+    if (!input) throw new Error(`Selector not found: ${selector}`);
+
+    await input.focus();
+
+    // Clear any existing text
+    await page.keyboard.down("Control");
+    await page.keyboard.press("A");
+    await page.keyboard.up("Control");
+    await page.keyboard.press("Backspace");
+
+    // Human-like typing with typos & corrections
+    const possibleTypos = "abcdefghijklmnopqrstuvwxyz";
+    for (const char of text) {
+      // 10% chance: insert a typo, then backspace
+      if (Math.random() < 0.1) {
+        const typoChar = possibleTypos[Math.floor(Math.random() * possibleTypos.length)];
+        await page.keyboard.type(typoChar, { delay: 80 + Math.floor(Math.random() * 120) });
+        await page.waitForTimeout(200 + Math.floor(Math.random() * 200));
+        await page.keyboard.press("Backspace");
+      }
+
+      // Type the correct character
+      await page.keyboard.type(char, { delay: 60 + Math.floor(Math.random() * 120) });
+
+      // Add extra pause after spaces
+      if (char === " " && Math.random() < 0.3) {
+        await page.waitForTimeout(300 + Math.floor(Math.random() * 200));
+      }
+    }
+
+    // Force React/Vue to register final value
+    await page.$eval(
+      selector,
+      (el, value) => {
+        const setter = Object.getOwnPropertyDescriptor(el.__proto__, "value").set;
+        setter.call(el, value); // native setter
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      },
+      text
+    );
+
+    // Verify final value
+    const typedValue = await page.$eval(selector, (el) => el.value);
+    if (typedValue === text) {
+      console.log(`✅ Typed "${text}" into ${selector} successfully (human-like + React/Vue safe).`);
+      return `Successfully typed "${text}" into ${selector}.`;
+    } else {
+      throw new Error(`❌ Mismatch: expected "${text}" but input has "${typedValue}".`);
+    }
   },
 });
+
+
+
 
 export const pressKey = tool({
   name: "press-key",
@@ -87,34 +138,26 @@ export const clickElement = tool({
   description: "Click an element using a CSS selector",
   parameters: z.object({ selector: z.string() }),
   async execute({ selector }) {
-    console.log(`Step: clicking element ${selector}...`);
     if (!page) throw new Error("No active page");
-    try {
-      await page.waitForSelector(selector, { visible: true, timeout: 5000 });
-      const elementHandle = await page.$(selector);
-      if (!elementHandle) throw new Error(`Element not found: ${selector}`);
+    console.log(`Clicking element ${selector}...`);
 
-      // Scroll into view
-      await elementHandle.evaluate((el) => el.scrollIntoView({ behavior: "instant", block: "center" }));
+    await page.waitForSelector(selector, { visible: true });
+    const elementHandle = await page.$(selector);
 
-      // Click safely
-      try {
-        await elementHandle.click({ delay: 100 });
-      } catch (err) {
-        console.warn(`Normal click failed, trying boundingBox click: ${err}`);
-        const box = await elementHandle.boundingBox();
-        if (box) await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-        else throw new Error(`Could not resolve bounding box for ${selector}`);
-      }
+    if (!elementHandle) return `Element not found: ${selector}`;
 
-      console.log(`Clicked element: ${selector}`);
-      return `Clicked element: ${selector}`;
-    } catch (err) {
-      console.error(`Error clicking element ${selector}: ${err}`);
-      return `Error clicking element ${selector}: ${err}`;
-    }
+    await elementHandle.evaluate(el => el.scrollIntoView({ behavior: "instant", block: "center" }));
+    await elementHandle.click({ delay: 100 });
+    await page.waitForTimeout(1000);
+
+    // ✅ Validation: check if button was disabled or removed after click
+    const exists = await page.$(selector);
+    const clickedSuccessfully = !exists || await page.$eval(selector, el => el.disabled || el.tagName.toLowerCase() !== "button");
+    console.log(`Clicked element ${selector}, validation: ${clickedSuccessfully}`);
+    return `Clicked element ${selector}`;
   },
 });
+
 
 export const scrollPage = tool({
   name: "scroll-page",
@@ -144,18 +187,20 @@ export const moveCursor = tool({
   },
 });
 
-export const takeScreenshot = tool({
-  name: "take-screenshot",
-  description: "Take screenshot of the current page",
-  parameters: z.object({ filename: z.string() }),
-  async execute({ filename }) {
-    console.log(`Step: taking screenshot ${filename}...`);
-    if (!page) throw new Error("No active page");
-    await page.screenshot({ path: filename, fullPage: true });
-    console.log(`Screenshot saved as ${filename}`);
-    return `Screenshot saved as ${filename}`;
-  },
-});
+// export const takeScreenshot = tool({
+//   name: "take-screenshot",
+//   description: "Take screenshot of the current page",
+//   parameters: z.object({ filename: z.string() }),
+//   async execute({ filename }) {
+//     console.log(`Step: taking screenshot ${filename}...`);
+//     if (!page) throw new Error("No active page");
+//     await page.screenshot({ path: filename, fullPage: true });
+//     console.log(`Screenshot saved as ${filename}`);
+//     return `Screenshot saved as ${filename}`;
+//   },
+// });
+
+
 
 // 🧠 Agent definition
 const agent = new Agent({
@@ -176,6 +221,10 @@ You are a web automation assistant.
 - When searching (e.g., YouTube, Google), prefer pressing "Enter" after typing instead of clicking buttons, unless clicking is necessary.
 - Always provide updates of what you are about to do before calling a tool (planning phase).
 - Maintain a step-by-step approach, do not skip steps.
+- If the task is to "fill all fields," loop through all inputs, textareas, selects, and checkboxes.
+- Decide values based on type, placeholder, or name.
+- Always call extract-elements before typing to know all available fields.
+- Do not submit until all fields are filled.
 - Do NOT close the browser under any circumstances. The user will handle closing the browser manually.
 - Only call the tools listed. Never invent a tool or assume closing the browser is necessary.
 
@@ -196,8 +245,8 @@ Planning steps:
 Always follow this pattern for complex tasks.
 `,
   client: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
-  tools: [openBrowser, typeText, pressKey, clickElement, scrollPage, moveCursor, takeScreenshot, extractElements],
-  modelSettings: { toolChoice: "required" },
+  tools: [openBrowser, typeText, pressKey, clickElement, scrollPage, moveCursor, extractElements],
+  
 });
 
 
@@ -237,7 +286,7 @@ async function runBrowserAgent(query) {
 
 
 // Example usage
-const userQuery = "gmail.com/ then login with my gmail id 'gkmbusiness74@gmail.com' password: 'gkm123' ";
+const userQuery = "Go to 'ui.chaicode.com' and try to sign in use random email and password ";
 const output = await runBrowserAgent(userQuery);
 
 console.log("Final Output:", output);
