@@ -378,9 +378,9 @@ export default function Home() {
                 )
               ) : (
                 <div className="space-y-3">
-                  <pre className="max-h-64 overflow-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-700 border">
+                  {/* <pre className="max-h-64 overflow-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-700 border">
                     {JSON.stringify(response, null, 2)}
-                  </pre>
+                  </pre> */}
 
                   {response.results && response.results.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
