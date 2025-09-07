@@ -4529,11 +4529,6 @@ try{
  * Next.js 15 Route Handler
  */
 export async function POST(req) {
-  const user = await authenticate(req);
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
 
   try {
     const { imageUrl, query, position, videoType, style, mood } = await req.json();
