@@ -151,11 +151,6 @@ export default function Home() {
         }),
       })
 
-      
-      if (genRes.status === 401) {
-        window.location.href = "/login";
-        return;
-      }
 
       const genData = await genRes.json()
       if (!genRes.ok) throw new Error(genData.error || "Failed to generate image")
